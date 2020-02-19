@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-web
+  labels:
+    app: petclinic-web
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 8443
+      name: petclinic-web-ssl
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+      name: petclinic-web
+
+  selector:
+    app: petclinic-web
+  type: NodePort    
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petclinic-web
+  template:
+    metadata:
+      labels:
+        app: petclinic-web
+      name: petclinic-web
+    spec:
+      containers:
+      - name: petclinic-web
+        image: texanraj/petclinic:2020
+        imagePullPolicy: Never
